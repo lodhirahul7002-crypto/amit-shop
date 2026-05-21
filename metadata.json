@@ -1,0 +1,6 @@
+{
+  "name": "MP e-Seva & MultiTool Pro Suite",
+  "description": "Premium e-Seva digital services portal integrated with MultiTool Pro utility suite. Features include Citizen and Admin portals, govt job trackers, background removal, photo enhancing, passport photo creator, image compression, document converters, and translator tools.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
