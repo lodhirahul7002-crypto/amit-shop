@@ -121,9 +121,9 @@ export default function MultiToolSuite() {
             })}
           </div>
 
-          <div className="rounded-2xl bg-white border border-slate-100 p-3 shadow-sm space-y-1 overflow-hidden" id="tool-menu-group">
+          <div className="rounded-2xl bg-white border border-slate-100 p-3 shadow-sm overflow-hidden" id="tool-menu-group">
             <AnimatePresence mode="popLayout" initial={false}>
-              <motion.div className="space-y-1" layout="position">
+              <motion.div className="flex lg:flex-col gap-1.5 overflow-x-auto lg:overflow-visible pb-2.5 lg:pb-0 lg:space-y-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-slate-200" layout="position">
                 {filteredTools.map(tool => {
                   const ToolIcon = tool.icon;
                   const isActive = activeTool === tool.id;
@@ -138,10 +138,10 @@ export default function MultiToolSuite() {
                       whileTap={{ scale: 0.985 }}
                       key={tool.id}
                       onClick={() => setActiveTool(tool.id)}
-                      className={`relative flex w-full items-start gap-3 rounded-xl p-3 text-left transition-colors overflow-hidden select-none ${
+                      className={`relative flex w-[220px] lg:w-full shrink-0 items-start gap-3 rounded-xl p-3 text-left transition-colors overflow-hidden select-none ${
                         isActive 
                           ? "text-white" 
-                          : "text-slate-700 hover:bg-slate-50 hover:text-slate-950"
+                          : "text-slate-700 hover:bg-slate-50 hover:text-slate-950 bg-slate-50/50 border border-slate-100/40"
                       }`}
                     >
                       {isActive && (

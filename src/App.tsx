@@ -275,8 +275,8 @@ export default function App() {
         </AnimatePresence>
       </header>
 
-      {/* 3. Main content area */}
-      <main className="flex-1 py-6 px-4 md:py-8">
+      {/* 3. Main content area - Add bottom padding on mobile for sticky bottom bar */}
+      <main className="flex-1 py-6 px-4 md:py-8 pb-20 lg:pb-8">
         <div className="mx-auto max-w-7xl">
           <AnimatePresence mode="wait">
             <motion.div
@@ -335,7 +335,7 @@ export default function App() {
       </main>
 
       {/* 4. Unified professional footer */}
-      <footer className="border-t border-slate-200 bg-slate-950 text-slate-400 text-xs py-14">
+      <footer className="border-t border-slate-200 bg-slate-950 text-slate-400 text-xs py-14 pb-28 lg:pb-14">
         <div className="mx-auto max-w-7xl px-4 grid gap-8 md:grid-cols-4 text-left">
           
           <div className="space-y-4">
@@ -396,6 +396,149 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* 5. Mobile Bottom Navigation Bar (lg:hidden) */}
+      <div className="lg:hidden scale-100 fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] pb-[env(safe-area-inset-bottom)] select-none">
+        <div className="grid grid-cols-5 h-16 items-center">
+          {[
+            { id: "home", label: currentLanguage === "English" ? "Home" : "मुख्य", icon: Home },
+            { id: "jobs", label: currentLanguage === "English" ? "Jobs" : "नौकरी", icon: Briefcase, badge: "New" },
+            { id: "aeps", label: currentLanguage === "English" ? "Atm ATM" : "आधार ATM", icon: ShieldCheck },
+            { id: "rates", label: currentLanguage === "English" ? "Rates" : "शुल्क", icon: Coins },
+            { id: "tools", label: currentLanguage === "English" ? "Tools" : "टूल्स", icon: Sparkles }
+          ].map((item) => {
+            const Icon = item.icon;
+            const isActive = activePage === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => handlePageNavigation(item.id)}
+                className={`flex flex-col items-center justify-center gap-1 h-full relative transition duration-150 active:scale-95 ${
+                  isActive ? "text-indigo-600 font-black" : "text-slate-500 hover:text-slate-900"
+                }`}
+              >
+                <div className={`p-1.5 rounded-xl transition ${isActive ? "bg-indigo-50 text-indigo-650" : ""}`}>
+                  <Icon size={18} />
+                </div>
+                <span className="text-[9px] tracking-tight leading-none whitespace-nowrap">
+                  {item.label}
+                </span>
+                {item.badge && (
+                  <span className="absolute top-1 right-2 text-[7px] font-black uppercase text-white bg-indigo-600 px-1 py-0.5 rounded-md leading-none animate-bounce">
+                    {item.badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 6. Client OTP/Login Verification Modal Backdrop */}
+      <AnimatePresence>
+        {isLoginModalOpen && (
+          <div className="fixed inset-0 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-3xl p-6 max-w-sm w-full border shadow-2xl space-y-5 text-left relative overflow-hidden"
+            >
+              <div className="absolute right-0 top-0 translate-x-8 -translate-y-8 w-24 h-24 bg-indigo-50 rounded-full" />
+              
+              <div className="flex justify-between items-center border-b pb-3 relative z-10">
+                <div>
+                  <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider">
+                    कियोस्क प्रमाणीकरण
+                  </h3>
+                  <p className="text-[10px] text-slate-400 font-bold">Kiosk Mobile & OTP Sign-in</p>
+                </div>
+                <button 
+                  onClick={() => {
+                    setIsLoginModalOpen(false);
+                    setIsOtpSent(false);
+                  }} 
+                  className="text-slate-450 hover:text-slate-650 font-bold p-1 hover:bg-slate-50 rounded-xl transition"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={handleLoginSubmit} className="space-y-4 relative z-10">
+                {!isOtpSent ? (
+                  <div className="space-y-3">
+                    <div className="space-y-1">
+                      <label className="block text-[10px] uppercase font-bold text-slate-500">मोबाइल नंबर (Mobile Number) *</label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-3 text-slate-400 text-xs font-bold font-mono">+91</span>
+                        <input
+                          type="tel"
+                          required
+                          pattern="[0-9]{10}"
+                          maxLength={10}
+                          placeholder="xxxxxxxxxx"
+                          value={phoneNumber}
+                          onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ""))}
+                          className="w-full text-xs pl-12 pr-4 py-2.5 bg-slate-50 border rounded-xl focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono font-bold"
+                        />
+                      </div>
+                      <span className="text-[8px] text-slate-400 block leading-tight font-medium">Verify credentials via safe 4-digit code dispatched under SMS regulation gateway.</span>
+                    </div>
+
+                    <div className="p-3 bg-slate-50 rounded-2xl border border-slate-150 flex items-start gap-2.5">
+                      <ShieldCheck size={18} className="text-indigo-600 shrink-0 mt-0.5" />
+                      <div>
+                        <span className="block text-[10px] font-black text-slate-700">AES-256 Cloud Security Link</span>
+                        <p className="text-[8px] text-slate-405 text-slate-400 font-medium font-sans leading-tight mt-0.5">Secure sandbox logins are processed offline securely. Enter any mock 10-digit phone to receive mock PIN.</p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full py-3 text-xs bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-extrabold uppercase shadow-md shadow-indigo-600/20 transition active:scale-95 text-center leading-none tracking-widest mt-2 cursor-pointer"
+                    >
+                      OTP भेजें (Request OTP Code) ✓
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="space-y-1">
+                      <div className="p-2.5 bg-indigo-50 rounded-xl border border-indigo-100 text-[10px] font-bold text-indigo-900 leading-normal mb-1">
+                        📲 SMS code sent to <span className="font-mono font-black text-indigo-750">+91 {phoneNumber}</span>. Enter any 4-digit PIN (e.g. <span className="font-mono font-black text-indigo-750">1234</span>) to authenticate.
+                      </div>
+                      <label className="block text-[10px] uppercase font-bold text-slate-500">सुरक्षा पिन दर्ज करें (Enter 4-Digit Pin Code) *</label>
+                      <input
+                        type="password"
+                        required
+                        maxLength={4}
+                        placeholder="••••"
+                        value={otpValue}
+                        onChange={(e) => setOtpValue(e.target.value.replace(/\D/g, ""))}
+                        className="w-full text-center text-lg py-2 bg-slate-50 border rounded-xl focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono font-black tracking-widest"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full py-3 text-xs bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-extrabold uppercase shadow-md shadow-emerald-600/20 transition active:scale-95 text-center leading-none tracking-widest mt-2 cursor-pointer"
+                    >
+                      सत्यापित करें (Verify OTP pin) ⚡
+                    </button>
+                    
+                    <button
+                      type="button"
+                      onClick={() => setIsOtpSent(false)}
+                      className="w-full text-center hover:underline text-[9px] text-slate-400 font-bold uppercase mt-1 cursor-pointer"
+                    >
+                      नंबर बदलें (Back to edit phone)
+                    </button>
+                  </div>
+                )}
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

@@ -218,7 +218,7 @@ export default function RateServiceBoardPage() {
         </div>
 
         {/* Right Side: Interactive Billing Cart Estimator (4 Columns) */}
-        <div className="md:col-span-4 space-y-4">
+        <div className="md:col-span-4 space-y-4" id="billing-card-wrapper">
           
           <div className="bg-white border rounded-3xl p-5 shadow-sm space-y-4 text-left">
             <h3 className="text-xs font-black text-indigo-650 uppercase tracking-widest border-b pb-2 flex items-center gap-1">
@@ -353,6 +353,29 @@ export default function RateServiceBoardPage() {
         </div>
 
       </div>
+
+      {/* Floating Mobile Cart Indicator Drawer Anchor */}
+      {cart.length > 0 && (
+        <div className="md:hidden fixed bottom-[76px] left-4 right-4 z-40 animate-bounce">
+          <button
+            onClick={() => {
+              const el = document.getElementById("billing-card-wrapper");
+              if (el) {
+                el.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white p-3.5 rounded-2xl font-black text-[10px] uppercase tracking-wider flex items-center justify-between shadow-xl shadow-indigo-600/35 border border-indigo-500/40"
+          >
+            <span className="flex items-center gap-1">
+              <span>🧾 {cart.length} सेवा(एँ) चयनित (Selected)</span>
+            </span>
+            <span className="flex items-center gap-0.5 font-mono">
+              <span>कुल: ₹{calculateTotal()} • रसीद बनाएँ</span>
+              <ChevronRight size={13} />
+            </span>
+          </button>
+        </div>
+      )}
 
     </div>
   );
